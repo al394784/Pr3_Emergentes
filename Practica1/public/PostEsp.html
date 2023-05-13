@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>EDMA</title>
+
+    <!-- Required Stylesheets -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+
+    <!-- Required scripts -->
+    <script src="//cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <body>
+    <!-- Our application root element -->
+    <div id="app">
+        <b-container>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Menú -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+          <b-jumbotron header="EDMA" lead="Easting disorder management application">
+            <div>
+              <b-nav tabs align="center">
+                <b-nav-item href = "index.html" >Inicio</b-nav-item>
+                <b-nav-item href = "PostCli.html" >Cliente</b-nav-item>
+                <b-nav-item href = "PostEsp.html" active>Especialista </b-nav-item>
+                <b-nav-item href = "AddCli.html" >Nuevo Cliente</b-nav-item>
+                <b-nav-item href = "Post.html"  >Nuevo Post</b-nav-item>
+
+              </b-nav>
+            </div>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Empezar pagina -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+
+            <b-button @click="searchPsi">Psicólogos</b-button>
+            <div v-if="psicologos">
+              <b-card>
+                <ul>
+                  <p v-for="psi in psicologos">
+                      <b-card>DNI:  {{psi.DNI}}</b-card>
+                      <b-card>Nombre:  {{psi.name}}</b-card>
+                      <b-card>Email:  {{psi.email}}</b-card>
+                  </p>
+                </ul>
+              </b-card>
+            </div>
+            <b-card v-else variant="warning">No hay resultados</b-card>
+
+            <b-button @click="searchNut">Nutricionistas</b-button>
+            <div v-if="nutricionistas">
+              <b-card>
+                <ul>
+                  <p v-for="nut in nutricionistas">
+                    <b-card>DNI:  {{nut.DNI}}</b-card>
+                    <b-card>Nombre:  {{nut.name}}</b-card>
+                    <b-card>Email:  {{nut.email}}</b-card>
+                  </p>
+                </ul>
+              </b-card>
+            </div>
+            <b-card v-else variant="warning">No hay resultados</b-card>
+
+
+      </b-container>
+    </div>
+
+    <!-- Start running your app -->
+    <script>
+        window.app  = new Vue({
+          el: '#app',
+          data: {
+           psicologos: [],
+           nutricionistas: []
+          },
+          computed: {
+            showAlert() {
+              return this.name.length > 2 ? true : false
+            }
+          },
+          methods:{
+            searchPsi(){
+            var self = this
+            var gQL = `query{especialidad(especialidad:"Psicologo"){name,DNI,email}}`
+
+            fetch('/graphql?query=' + encodeURIComponent(gQL))
+            .then(function(r){return r.json()})
+            .then(function(json){
+              self.psicologos = json.data.especialidad
+            })
+            .catch(function(error){console.log(error)})
+          },
+          searchNut(){
+            var self = this
+            var gQL = `query{especialidad(especialidad:"Nutricionista"){name,DNI,email}}`
+
+            fetch('/graphql?query=' + encodeURIComponent(gQL))
+            .then(function(r){return r.json()})
+            .then(function(json){
+              self.nutricionistas = json.data.especialidad
+            })
+            .catch(function(error){console.log(error)})
+          },
+          },
+          mounted(){
+            var self = this
+            var ES = new EventSource('/news') //ruta API con notificaciones
+  
+            console.log('Creando listener de eventos de servidor...')
+  
+            ES.addEventListener('new-post', function(event){
+              var data = JSON.parse(JSON.parse(event.data)) 
+              //bytes to string -> string to json
+              if (data.blogId == self.blogId)
+                  self.posts.push(data)
+            }, false)
+          }
+        })
+      </script>
+  </body>
+</html>

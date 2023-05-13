@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>EDMA</title>
+
+    <!-- Required Stylesheets -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+
+    <!-- Required scripts -->
+    <script src="//cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <body>
+    <!-- Our application root element -->
+    <div id="app">
+      <b-container>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Menú -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <b-jumbotron header="EDMA" lead="Easting disorder management application">
+          <div>
+            <b-nav tabs align="center">
+              <b-nav-item href = "index.html" >Inicio</b-nav-item>
+              <b-nav-item href = "PostCli.html" >Cliente</b-nav-item>
+              <b-nav-item href = "PostEsp.html">Especialista </b-nav-item>
+              <b-nav-item href = "AddCli.html" active>Nuevo Cliente</b-nav-item>
+              <b-nav-item href = "Post.html"  >Nuevo Post</b-nav-item>
+            </b-nav>
+          </div>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Empezar pagina -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+      <template>
+        <div>
+          <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+            <b-form-group
+              id="input-group-1"
+              label="Nombre:"
+              label-for="input-1"
+            >
+              <b-form-input
+                id="input-1"
+                v-model="name"
+                type="text"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              id="input-group-2"
+              label="Contraseña:"
+              label-for="input-2"
+            >
+              <b-form-input type="password" id="input-2"  v-model="passwd" aria-describedby="password-help-block"></b-form-input>
+            </b-form-group>
+            <b-form-group
+              id="input-group-3"
+              label="DNI:"
+              label-for="input-3"
+            >
+              <b-form-input
+                id="input-3"
+                v-model="dni"
+                type="text"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              id="input-group-4"
+              label="Email:"
+              label-for="input-4"
+            >
+              <b-form-input
+                id="input-4"
+                v-model="email"
+                type="email"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+              id="input-group-5"
+              label="Psicólogo:"
+              label-for="input-5"
+            >
+              <b-form-input
+                id="input-5"
+                v-model="psi"
+                type="text"
+                placeholder="DNI psicólogo"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-form-group
+            id="input-group-6"
+            label="Nutricionista:"
+            label-for="input-6"
+            >
+              <b-form-input
+                id="input-6"
+                v-model="nut"
+                type="text"
+                placeholder="DNI nutricionista"
+                required
+              ></b-form-input>
+            </b-form-group>
+            <b-button type="submit" variant="primary">Enviar</b-button>
+            <b-button type="reset" variant="danger">Reset</b-button>
+          </b-form>
+          
+        </div>
+      </template>
+      </b-container>
+    </div>
+
+    <!-- Start running your app -->
+    <script>
+        window.app  = new Vue({
+          el: '#app',
+          data: {
+            
+              name: '',
+              passwd:'',
+              dni:'',
+              email:'',
+              psi:'',
+              nut:'',
+            ret:'',
+            show: true 
+          },
+          computed: {
+            
+          },
+          methods:{
+            onSubmit(event) {
+                var self = this
+                var gQL = `mutation{addCliente(name:"${this.name}",passwd:"${this.passwd}",DNI:"${this.dni}",email:"${this.email}",psicologo_dni:"${this.psi}",nutricionista_dni:"${this.nut}")}`
+                
+                fetch('/graphql?query=' + encodeURIComponent(gQL), {method: 'POST'})
+                .then(function(r){return r.json()})
+                .then(function(json){
+                  self.ret = json.data.addCliente
+                })
+                .catch(function(error){console.log(error)})
+               
+              },
+            onReset(event) {
+                  // Reset our form values
+                  this.email = ''
+                  this.name = ''
+                  this.passwd = ''
+                  this.dni = ''
+                  this.psi = ''
+                  this.nut = ''
+                  // Trick to reset/clear native browser form validation state
+                  this.show = false
+                  this.$nextTick(() => {
+                    this.show = true
+                  })
+                },
+           
+          },
+          mounted(){
+            
+          }
+        })
+      </script>
+  </body>
+</html>

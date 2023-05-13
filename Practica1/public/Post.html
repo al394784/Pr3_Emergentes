@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>EDMA</title>
+
+    <!-- Required Stylesheets -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+
+    <!-- Required scripts -->
+    <script src="//cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <body>
+    <!-- Our application root element -->
+    <div id="app">
+        <b-container>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Menú -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+
+          <b-jumbotron header="EDMA" lead="Easting disorder management application">
+            <div>
+              <b-nav tabs align="center">
+                <b-nav-item href = "index.html" >Inicio</b-nav-item>
+                <b-nav-item href = "PostCli.html" >Cliente</b-nav-item>
+                <b-nav-item href = "PostEsp.html" >Especialista </b-nav-item>
+                <b-nav-item href = "AddCli.html" >Nuevo Cliente</b-nav-item>
+                <b-nav-item href = "Post.html" active >Nuevo Post</b-nav-item>
+              </b-nav>
+            </div>
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Empezar pagina -->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+           <div>
+                
+            <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+                <b-form-group
+                    id="input-group-1"
+                    label="Título:"
+                    label-for="input-1"
+                >
+                    <b-form-input
+                    id="input-1"
+                    v-model="form.title"
+                    type="text"
+                    required
+                    ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                    id="input-group-2"
+                    label="Email autor:"
+                    label-for="input-2"
+                >
+                    <b-form-input
+                    id="input-2"
+                    v-model="form.aut"
+                    type="email"
+                    required
+                    ></b-form-input>
+                </b-form-group>
+                <b-form-group
+                    id="input-group-3"
+                    label="Para:"
+                    label-for="input-3"
+                >
+                    <b-form-input
+                    id="input-3"
+                    v-model="form.rec"
+                    type="email"
+                    required
+                    ></b-form-input>
+                </b-form-group>
+                <b-form-textarea
+                    id="input-group-4"
+                    rows="3"
+                    max-rows="6"
+                    >
+                    <b-form-input
+                    id="input-4"
+                    v-model="form.content"
+                    type="text"
+                    required
+                    ></b-form-input>
+                </b-form-textarea>
+            
+                <b-button type="submit" variant="primary">Enviar</b-button>
+                <b-button type="reset" variant="danger">Reset</b-button>
+              </b-form>
+              
+            </div> 
+            
+      </b-container>
+    </div>
+
+
+    <!-- Start running your app -->
+    <script>
+        window.app  = new Vue({
+          el: '#app',
+          data: {
+           
+            form:{
+                title:'',
+                aut:'',
+                rec:'',
+                content:''
+                },
+                ret:'',
+            show: true  
+          },
+          computed: {
+           
+          },
+          methods:{
+            onSubmit(event) {
+                var self = this
+                var gQL = `mutation{addPostCli(title:"${this.form.title}",author_email:"${this.form.aut}",receiver_email:"${this.form.rec}",content:"${this.form.content}")}`
+                
+                fetch('/graphql?query=' + encodeURIComponent(gQL), {method: 'POST'})
+                .then(function(r){return r.json()})
+                .then(function(json){
+                    self.ret = json.data.addPostCli
+                })
+                .catch(function(error){console.log(error)})
+              },
+            onReset(event) {
+                  // Reset our form values
+                  this.form.title = ''
+                  this.form.aut = ''
+                  this.form.rec = ''
+                  this.form.content = ''
+                  // Trick to reset/clear native browser form validation state
+                  this.show = false
+                  this.$nextTick(() => {
+                    this.show = true
+                  })
+                },
+          },
+          mounted(){
+            var self = this
+            var ES = new EventSource('/news') //ruta API con notificaciones
+  
+            console.log('Creando listener de eventos de servidor...')
+  
+            ES.addEventListener('new-post', function(event){
+              var data = JSON.parse(JSON.parse(event.data)) 
+              //bytes to string -> string to json
+              if (data.blogId == self.blogId)
+                  self.posts.push(data)
+            }, false)
+          }
+        })
+      </script>
+  </body>
+</html>

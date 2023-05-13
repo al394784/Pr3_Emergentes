@@ -1,0 +1,43 @@
+{
+"@context": "https://schema.org/",
+  "@type": "Organization",
+  "name": "EDMA",
+  "url": "https://www.edma.es",
+  "description": "Management application that allows the specialist to have a better communication with the pacients and other specialists. It also provides a better organization of the documentation for each pacient and gives more flexibility to decide the future plans for the pacient",
+  "founder": [
+    {
+      "@type": "Person",
+      "name": "Marc Yeste",
+      "url": "https://www.edma.es/us"
+    },
+    {
+      "@type": "Person",
+      "name": "Zinedine Boudaba",
+      "url": "https://www.edma.es/us"
+    },
+    {
+      "@type": "Person",
+      "name": "Gustavo Ulpino",
+      "url": "https://www.edma.es/us"
+    }
+  ],
+  "medicalAudience": "Psycilogist, psychiatrics and nutritionists that seek to have a better organization, communication and planning with pacients that suffer from ACT and fellow collegues that work with the same pacient in a different medical speciality.",
+  "recognizingAuthority": [
+    {
+      "@type": "Organization",
+      "name": "SEPSM",
+      "url": "https://www.sepsm.org"
+    },
+    {
+      "@type": "Organization",
+      "name": "CODINMA",
+      "url": "https://www.codinma.es"
+    }
+  ],
+  "medicalSpeciality": [
+    "Psychiatric",
+    "DietNutricion",
+    "Pediatric"
+  ]
+  
+}

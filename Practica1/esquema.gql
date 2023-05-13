@@ -1,0 +1,55 @@
+type Query {
+    clientes: [Cliente]
+    especialistas: [Especialista]
+    especialidad(especialidad: String!):[Especialista]
+    postCli(author_email: String!):[PostCli]
+    PostEsp(author_email: String!):[PostEsp]
+
+  }
+  type Mutation {
+    addCliente(name: String!,passwd:String!,DNI: String!,email: String!,psicologo_dni: String!,nutricionista_dni: String!):String!
+    addEspecialista(name: String!,DNI: String!,email: String!,especialidad: String!):String!
+    addPostCli(title:String!,content:String!,author_email:String!,receiver_email:String!):String
+    addPostEsp(title:String!,content:String!,author_email:String!,receiver_email:String!):String
+    addInforme(especialista_email:String!,paciente_email:String!,content:String!,title:String!):String
+  }
+  type Cliente{
+	name: String
+  passwd: String
+  DNI: String
+  email: String
+  psicologo_dni: String
+  nutricionista_dni: String
+  }
+  type Especialista{
+	name: String
+  passwd: String
+  DNI: String
+  email: String
+  especialidad: String
+  }
+
+  type PostCli{
+	id_post: Int
+  title: String
+  content: String
+  author_email:String
+  receiver_email: String
+
+  }
+  type PostEsp{
+	id_post: Int
+  title: String
+  content: String
+  author_email:String
+  receiver_email: String
+
+  }
+  type Informe{
+	id_informe: Int
+  fecha: Int
+  especialista_emaail: String
+  paciente_email: String
+  title: String
+  content: String
+  }

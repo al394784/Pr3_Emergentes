@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+    <title>EDMA</title>
+
+    <!-- Required Stylesheets -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.css"
+    />
+
+    <!-- Required scripts -->
+    <script src="//cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+    <script src="//unpkg.com/babel-polyfill@latest/dist/polyfill.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.js"></script>
+  </head>
+  <body>
+    <!-- Our application root element -->
+    <div id="app">
+      <b-container>
+
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+          <!--Menú-->
+<!--!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
+        <b-jumbotron header="EDMA" lead="Easting disorder management application">
+          <div>
+            <b-nav tabs align="center">
+              <b-nav-item href = "index.html" active>Inicio</b-nav-item>
+              <b-nav-item href = "PostCli.html">Cliente</b-nav-item>
+              <b-nav-item href = "PostEsp.html">Especialista </b-nav-item>
+              <b-nav-item href = "AddCli.html">Nuevo Cliente</b-nav-item>
+              <b-nav-item href = "Post.html"  >Nuevo Post</b-nav-item>
+
+            </b-nav>
+          </div>
+
+
+
+      </b-container>
+    </div>
+
+    <!-- Start running your app -->
+    <script>
+      window.app  = new Vue({
+        el: '#app',
+        data: {
+        
+        },
+        methods:{
+        
+        },
+        mounted(){
+          var self = this
+          var ES = new EventSource('/news') //ruta API con notificaciones
+
+          console.log('Creando listener de eventos de servidor...')
+
+          ES.addEventListener('new-post', function(event){
+            var data = JSON.parse(JSON.parse(event.data)) 
+            //bytes to string -> string to json
+            if (data.blogId == self.blogId)
+                self.posts.push(data)
+          }, false)
+        }
+      })
+    </script>
+  </body>
+</html>
